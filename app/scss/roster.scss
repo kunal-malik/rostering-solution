@@ -1,5 +1,4 @@
 .roster-container {
-    
     .header{
         background-color: $dark-blue;
         position: relative;
@@ -8,7 +7,7 @@
         z-index: 1030;
         min-height: 50px;
 
-         .heading{
+         h3{
             color: $white;
             text-align: center;
             vertical-align: middle;
@@ -26,16 +25,8 @@
         }
     }
 
-    .table{
+    table{
         margin-top: $twenty;
-        .table-head{
-            color: $light-blue;
-            .th {
-                text-align: center;
-                text-decoration: underline;
-            }
-        }
-
         .employee-name {
             color: $light-blue;
             text-align: center;
@@ -59,5 +50,13 @@
             padding: $two $two $two $two;
           }
         }
+}
+
+thead{
+    color: $light-blue;
+}
+thead th {
+    text-align: center;
+    text-decoration: underline;
 }
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Utils from '../utils'
 import Constants from '../constants'
+import _ from 'lodash'
 
 const Highcharts = require('highcharts');
 require('highcharts/modules/exporting')(Highcharts);
@@ -21,8 +22,8 @@ class ChartComponent extends Component {
         this.state = {
             start_date: this.props.start_date,
             roles: this.props.roles,
-            employeeShifts: this.props.employeeShifts,
-            numberOfDays: this.props.numberOfDays
+            employeeShifts: !_.isEmpty(this.props.employeeShifts) ? this.props.employeeShifts : null,
+            numberOfDays: this.props.numberOfDays ? this.props.numberOfDays : null
         }
     }
 
@@ -83,55 +84,57 @@ class ChartComponent extends Component {
     }
 
     componentDidMount() {
-        const { start_date, roles, numberOfDays } = this.state;
-        const categories = new Array();
-        const series = this.getSeries(roles, numberOfDays);
-        for (let i = 0; i < numberOfDays; i++) {
-            const date = Utils.addDays(start_date, Constants.DATE_FORMAT, i).format(Constants.DATE_FORMAT);
-            categories.push(date);
-            this.updateSeriesData(date, series, i)
-        }
-        if (document.getElementById('chart-container')) {
-            Highcharts.chart('chart-container',
-                {
-                    chart: {
-                        type: 'column'
-                    },
-                    title: {
-                        text: 'Roles report'
-                    },
-                    subtitle: {
-                        text: ''
-                    },
-                    xAxis: {
-                        categories: categories,
-                        crosshair: true
-                    },
-                    yAxis: {
-                        min: 0,
+        const { start_date, roles, numberOfDays, employeeShifts } = this.state;
+        if (numberOfDays && employeeShifts) {
+            const categories = new Array();
+            const series = this.getSeries(roles, numberOfDays);
+            for (let i = 0; i < numberOfDays; i++) {
+                const date = Utils.addDays(start_date, Constants.DATE_FORMAT, i).format(Constants.DATE_FORMAT);
+                categories.push(date);
+                this.updateSeriesData(date, series, i)
+            }
+            if (document.getElementById('chart-container')) {
+                Highcharts.chart('chart-container',
+                    {
+                        chart: {
+                            type: 'column'
+                        },
                         title: {
-                            text: 'Number Of Days'
-                        }
-                    },
-                    tooltip: {
-                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                            '<td style="padding:0"><b>{point.y}</b></td></tr>',
-                        footerFormat: '</table>',
-                        shared: true,
-                        useHTML: true
-                    },
-                    plotOptions: {
-                        column: {
-                            pointPadding: 0.2,
-                            borderWidth: 0
-                        }
-                    },
-                    series: series,
-                    credits: {
-                        enabled: false
-                    },
-                });
+                            text: Constants.ROLES_REPORT
+                        },
+                        subtitle: {
+                            text: ''
+                        },
+                        xAxis: {
+                            categories: categories,
+                            crosshair: true
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: Constants.NO_OF_DAYS
+                            }
+                        },
+                        tooltip: {
+                            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                            footerFormat: '</table>',
+                            shared: true,
+                            useHTML: true
+                        },
+                        plotOptions: {
+                            column: {
+                                pointPadding: 0.2,
+                                borderWidth: 0
+                            }
+                        },
+                        series: series,
+                        credits: {
+                            enabled: false
+                        },
+                    });
+            }
         }
     }
 

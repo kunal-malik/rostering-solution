@@ -1,19 +1,22 @@
 **Instructions to set up this project**
-1) yarn install yarn run start
+1) yarn install
+2) yarn run start
+3) Open your browser and navigate to http://localhost:8081
+4) To run test cases, use yarn test
 Note: If Yarn commands doesn't work, try installing Yarn using npm install -g yarn
-2) Open your browser and navigate to http://localhost:8081
-3) To run test cases, use yarn test
 
 #Application-features
 1. Application built using React
 2. Rostering information is displayed in table format
 3. User can edit shift timings for a shift following below criterias:
 a) Back to back shifts are not allowed. Please allow at least 7.5 hours between two different shifts.
-b) Shift duration should be maximum 8.5 hours
+b) Shift duration should be maximum of 8.5 hours
 c) Shift duration should be more than break duration of the shift
 4. User can view number of employees performing a role for the duration by clicking 'View Roles' button. This information is presented in the form of bar chart powered by Highcharts
+5. Download bar chart capturing roles data
+6. Currently tested on Chrome
 
-**Problem:**
+
 **Biarri - Front End Dev Challenge**
 
 For this challenge, we are looking for you to create a simple rostering solution SPA for visualising and editing the shifts of employees. 

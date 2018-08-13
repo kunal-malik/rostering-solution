@@ -4,7 +4,8 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 //https://github.com/yury-dymov/react-bootstrap-time-picker
 import TimePicker from 'react-bootstrap-time-picker';
-import Constants from '../constants'
+import Constants from '../constants';
+import Utils from '../utils'
 
 class ModalComponent extends Component {
 
@@ -20,14 +21,14 @@ class ModalComponent extends Component {
     const tableValues = this.props.tableValues;
     const employeeShifts = tableValues[employeeID];
     const employeeSelectedShift = employeeShifts[index];
-    const employeeThreeDaysShifts = [employeeShifts[index - 1], employeeShifts[index], employeeShifts[index + 1]]
-    const startTime = moment(employeeSelectedShift.start_time).format("HH:mm");
-    const endTime = moment(employeeSelectedShift.end_time).format("HH:mm");
+    const employeeAdjacentShifts = [employeeShifts[index - 1], employeeShifts[index], employeeShifts[index + 1]];
+    const startTime = moment(employeeSelectedShift.start_time).format(Constants.TIME_FORMAT);
+    const endTime = moment(employeeSelectedShift.end_time).format(Constants.TIME_FORMAT);
     this.state = {
       employeeID,
       employeeSelectedShift,
       employeeName: tableValues[employeeID][0],
-      employeeThreeDaysShifts,
+      employeeAdjacentShifts,
       startTime,
       endTime,
       showError: false,
@@ -60,12 +61,12 @@ class ModalComponent extends Component {
    * Shift total time should be > break duration of the shift
    */
   handleSave() {
-    const { employeeThreeDaysShifts, startTime, endTime, employeeID, index } = this.state
-    const currentShift = employeeThreeDaysShifts[1];
-    const previousShiftEndTime = employeeThreeDaysShifts[0] ? moment(employeeThreeDaysShifts[0].end_time) : null;
-    const nextShiftStartTime = employeeThreeDaysShifts[2] ? moment(employeeThreeDaysShifts[2].start_time) : null;
-    const updatedStartTime = typeof startTime === 'string' ? moment(currentShift.start_time.substr(0, 10) + ' ' + startTime) : moment(currentShift.start_time.substr(0, 10)).startOf('day').seconds(startTime);
-    const updatedEndTime = typeof endTime === 'string' ? moment(currentShift.end_time.substr(0, 10) + ' ' + endTime) : moment(currentShift.end_time.substr(0, 10)).startOf('day').seconds(endTime);
+    const { employeeAdjacentShifts, startTime, endTime, employeeID, index } = this.state
+    const currentShift = employeeAdjacentShifts[1];
+    const previousShiftEndTime = employeeAdjacentShifts[0] ? moment(employeeAdjacentShifts[0].end_time) : null;
+    const nextShiftStartTime = employeeAdjacentShifts[2] ? moment(employeeAdjacentShifts[2].start_time) : null;
+    const updatedStartTime = Utils.getUpdatedTimeInMoment(currentShift.start_time, startTime);
+    const updatedEndTime = Utils.getUpdatedTimeInMoment(currentShift.end_time, endTime);
 
     //check if shift times are updated
     const currentShiftStartTime = currentShift.start_time;
@@ -77,7 +78,7 @@ class ModalComponent extends Component {
     } else {
       //shift times have been updated
       let showError = null;
-      let errorMsg = 'Back to back shifts are not allowed. Please allow at least 7.5 hours between shifts.';
+      let errorMsg = Constants.VALIDATION_BACK_TO_BACK;
       if (previousShiftEndTime) {
         showError = this.compareShiftTime(updatedStartTime, previousShiftEndTime);
       }
@@ -90,10 +91,10 @@ class ModalComponent extends Component {
         const diff = updatedEndTime.diff(updatedStartTime, 'minutes') / 60;
         if (diff > 8.5) {
           showError = true;
-          errorMsg = 'Shift duration should be maximum 8.5 hours'
+          errorMsg = Constants.VALIDATION_MAX_SHIFT_TIME;
         } else if (diff <= currentShift.break_duration / 3600) {
           showError = true;
-          errorMsg = 'Please allocate more than ' + currentShift.break_duration / 3600 + ' hour to a shift';
+          errorMsg = Constants.VALIDATION_ALLOCATE_PREFIX + currentShift.break_duration / 3600 + Constants.VALIDATION_ALLOCATE_SUFFIX;
         }
       }
 
@@ -130,7 +131,7 @@ class ModalComponent extends Component {
       <div className='modal-container'>
         <Modal show={this.props.showModal} onHide={this.handleClose} container={this} backdrop={true}>
           <Modal.Header closeButton>
-            <Modal.Title>Edit Shift Time</Modal.Title>
+            <Modal.Title>{Constants.EDIT_SHIFT_TIME}</Modal.Title>
           </Modal.Header>
 
           <Modal.Body>
@@ -140,18 +141,18 @@ class ModalComponent extends Component {
                   {errorMsg}
                 </Alert>
                 : null}
-              <div className="row"><span className="col-sm-4 bold">Employee Name</span><div className="col-sm-5"> {employeeName}</div> </div>
+              <div className="row"><span className="col-sm-4 bold">{Constants.EMPLOYEE_NAME}</span><div className="col-sm-5"> {employeeName}</div> </div>
               <div className="row"></div>
-              <div className="row"><span className="col-sm-4 bold"> Date</span> <div className="col-sm-5">{moment(employeeSelectedShift.start_time).format(Constants.DATE_FORMAT)}</div> </div>
+              <div className="row"><span className="col-sm-4 bold">{Constants.DATE}</span> <div className="col-sm-5">{moment(employeeSelectedShift.start_time).format(Constants.DATE_FORMAT)}</div> </div>
               <div className="row"></div>
               <div className="row">
                 <div className="col-sm-6">
-                  <div className="bold">Start Time</div>
+                  <div className="bold">{Constants.START_TIME}</div>
                   <TimePicker start="00:00" end="23:59" step={30}
                     value={startTime} onChange={(value) => _this.handleTimeChange('startTime', value)} />
                 </div>
                 <div className="col-sm-6">
-                  <div className="bold">End Time</div>
+                  <div className="bold">{Constants.END_TIME}</div>
                   <TimePicker start="00:00" end="23:59" step={30}
                     value={endTime} onChange={(value) => _this.handleTimeChange('endTime', value)} />
                 </div>
@@ -160,7 +161,7 @@ class ModalComponent extends Component {
           </Modal.Body>
 
           <Modal.Footer>
-            <Button id="modal-save" bsStyle="success" onClick={() => _this.handleSave()}>Save</Button>
+            <Button id="modal-save" bsStyle="success" onClick={() => _this.handleSave()}>{Constants.SAVE}</Button>
           </Modal.Footer>
         </Modal>
       </div>

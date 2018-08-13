@@ -31,5 +31,14 @@ export default {
     const shiftStartTime = moment(shiftTime);
     const shiftDate = moment(shiftStartTime.format(Constants.DATE_FORMAT));
     return shiftDate.diff(currentDate);
+  },
+
+  /**
+   * Appends date and time and returns as a moment object
+   * @param {*} currentShiftTime in YYYY-MM-DD HH:mm format
+   * @param {*} updatedShiftTime can be in seconds or as a string('15:00') 
+   */
+  getUpdatedTimeInMoment(currentShiftTime, updatedShiftTime) {
+    return typeof updatedShiftTime === 'string' ? moment(currentShiftTime.substr(0, 10) + ' ' + updatedShiftTime) : moment(currentShiftTime.substr(0, 10)).startOf('day').seconds(updatedShiftTime);
   }
 }
