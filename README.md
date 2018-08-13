@@ -13,7 +13,7 @@ a) Back to back shifts are not allowed. Please allow at least 7.5 hours between 
 b) Shift duration should be maximum of 8.5 hours
 c) Shift duration should be more than break duration of the shift
 4. User can view number of employees performing a role for the duration by clicking 'View Roles' button. This information is presented in the form of bar chart powered by Highcharts
-5. Download bar chart capturing roles data
+5. Download bar chart capturing roles data in different formats (png, jpeg, pdf and svg)
 6. Currently tested on Chrome
 
 
