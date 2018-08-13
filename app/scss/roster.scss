@@ -1,0 +1,63 @@
+.roster-container {
+    
+    .header{
+        background-color: $dark-blue;
+        position: relative;
+        right: 0;
+        left: 0;
+        z-index: 1030;
+        min-height: 50px;
+
+         .heading{
+            color: $white;
+            text-align: center;
+            vertical-align: middle;
+            padding-top: $ten;
+            margin-top: 0px !important;
+        }
+    }
+
+    .filters {
+        margin-top: $twenty;
+        text-align: center;
+        .alert {
+            padding: 5px !important;
+            margin-bottom: 0px !important;
+        }
+    }
+
+    .table{
+        margin-top: $twenty;
+        .table-head{
+            color: $light-blue;
+            .th {
+                text-align: center;
+                text-decoration: underline;
+            }
+        }
+
+        .employee-name {
+            color: $light-blue;
+            text-align: center;
+            vertical-align: middle;
+            font-weight: bold;
+        }
+
+        .shift-data {
+            @include borderradius(20px);
+          .shift-time{
+              font-weight: bold;
+              .edit{
+                  margin-left: $ten;
+               width: $ten;
+               height: $ten;
+               cursor: pointer;
+              }
+          }
+          .role-name{
+            @include borderradius(20px);
+            padding: $two $two $two $two;
+          }
+        }
+}
+}
