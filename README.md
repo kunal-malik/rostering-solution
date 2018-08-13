@@ -2,8 +2,8 @@
 1) yarn install
 2) yarn run start
 3) Open your browser and navigate to http://localhost:8081
-4) To run test cases, use yarn test
-Note: If Yarn commands doesn't work, try installing Yarn using npm install -g yarn
+4) To run test cases, use 'yarn test'
+Note: If Yarn commands doesn't work, try installing Yarn using 'npm install -g yarn'
 
 #Application-features
 1. Application built using React
