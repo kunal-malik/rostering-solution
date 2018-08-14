@@ -19,11 +19,11 @@ describe('RosterComponent component ', () => {
   it('should call different functions to populate data', () => {
     spyOn(RosterComponent.prototype, 'getHeaderValues').and.callThrough();
     spyOn(RosterComponent.prototype, 'getEmployeesShifts').and.callThrough();
-    spyOn(RosterComponent.prototype, 'getTableValues').and.callThrough();
+    spyOn(RosterComponent.prototype, 'getTableData').and.callThrough();
     const wrapper = mount(<RosterComponent/>)
     expect(RosterComponent.prototype.getHeaderValues).toHaveBeenCalled()
     expect(RosterComponent.prototype.getEmployeesShifts).toHaveBeenCalled()
-    expect(RosterComponent.prototype.getTableValues).toHaveBeenCalled()
+    expect(RosterComponent.prototype.getTableData).toHaveBeenCalled()
     expect(wrapper.state().headerValues.length).not.toBe(0);
     expect(wrapper.state().tableValues.length).not.toBe(0);
   })
